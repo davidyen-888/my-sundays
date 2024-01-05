@@ -1,95 +1,93 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import { useState } from "react";
+import { NextPage } from "next";
+import Head from "next/head";
+import styles from "./page.module.css";
+import { addYears, differenceInWeeks, isPast, startOfWeek } from "date-fns";
 
-export default function Home() {
+const Home: NextPage = () => {
+  const [name, setName] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date("1970-01-01"));
+  const [showBlocks, setShowBlocks] = useState(false);
+
+  // Calculate the number of years from the birthday to the expected lifespan (80 years)
+  const totalYears = 80;
+
+  // Generate an array of years from the birthday to the expected lifespan
+  const yearsArray = Array.from({ length: totalYears }, (_, index) =>
+    addYears(selectedDate, index)
+  );
+
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = new Date(event.target.value);
+    setSelectedDate(newDate);
+    setShowBlocks(true);
+  };
+
+  // Calculate the number of Sundays left
+  const today = new Date();
+  const weeksPassed = differenceInWeeks(today, startOfWeek(selectedDate));
+
+  // Adjust for the current week
+  const weekLeft = totalYears * 52 - weeksPassed;
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <div className={styles.container}>
+      <Head>
+        <title>Your Life Blocks</title>
+        <meta name="description" content="See the blocks of your life" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+      <main className={styles.main}>
+        <label htmlFor="name" className={styles.label}>
+          Who are you?
+        </label>
+        <input
+          type="text"
+          id="name"
+          placeholder="Your name"
+          className={styles.input}
+          value={name}
+          onChange={(event) => {
+            setName(event.target.value);
+          }}
         />
-      </div>
+        <label htmlFor="birthday" className={styles.label}>
+          Select Your Birthday:
+        </label>
+        <input
+          type="date"
+          id="birthday"
+          name="birthday"
+          value={selectedDate.toISOString().split("T")[0]} // Format date for input value
+          onChange={handleDateChange}
+          className={styles.input}
+        />
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+        {showBlocks && name.length > 0 && (
+          <>
+            <p className={styles.paragraph}>
+              {name}, only {weekLeft} Sundays remain
+            </p>
+            <div className={styles.grid}>
+              {yearsArray.map((year, index) => (
+                <div
+                  key={index}
+                  className={`${styles.block} ${
+                    isPast(year) ? styles.past : styles.future
+                  }`}
+                />
+              ))}
+            </div>
+            <p className={styles.paragraph}>
+              How are you going to spend these Sundays, {name}?
+            </p>
+          </>
+        )}
+      </main>
+    </div>
+  );
+};
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+export default Home;
