@@ -34,8 +34,8 @@ const Home: NextPage = () => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Your Life Blocks</title>
-        <meta name="description" content="See the blocks of your life" />
+        <title>My Sundays</title>
+        <meta name="description" content="See how many sundays you have left" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
