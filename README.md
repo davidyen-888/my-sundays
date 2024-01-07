@@ -1,4 +1,7 @@
-This is a project that is inspired from [terminal-sunday](https://github.com/accessd/terminal-sunday)
+# My Sundays
+
+This is a web app inspired from [The Last Sunday](https://chromewebstore.google.com/detail/the-last-sunday-reminder/aiojhapcgfgmiacbbjfgedhlcchmpelh), the Chrome extension.
+
 ![image](https://github.com/davidyen-888/my-sundays/assets/61106644/0e900fa2-c340-4688-831e-bdbeb7e8f76e)
 
 ## Getting Started
